@@ -1,5 +1,4 @@
-BSD 3-Clause License
-
+/**
 Copyright (c) 2009 - 2019, David Skorvaga
 All rights reserved.
 
@@ -27,3 +26,63 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#ifndef KOMBIG_KOMPRESE_H_
+#define KOMBIG_KOMPRESE_H_
+
+#include <fstream>
+
+#include "Bitmapa.h"
+
+
+
+
+namespace Bitmapy
+{
+	class VstupBitmap;
+	class BitmapovyIndex;
+
+	typedef std::vector<Bitmapa> SeznamBitmap;
+	typedef SeznamBitmap::size_type DelkaIndexu;
+
+	class Komprese
+	{
+	public:
+		static bool komprimuj(VstupBitmap & vstup, std::ofstream & vystup,
+			EBitmapy & e);
+		static bool vypocti(VstupBitmap & vstup, DelkaIndexu & velikostDat,
+			EBitmapy & e);
+
+	private:
+		static const Bitmapa::SlovoBitu ZERO_FILL = 0u;
+		static const Bitmapa::SlovoBitu ONE_FILL;
+		static const char MEZERA = ' ';
+		static const std::string PRAZDNE_SLOVO;
+
+		explicit Komprese(VstupBitmap & vstup, std::ofstream & vystup);
+		explicit Komprese(const Komprese & komprese);
+		~Komprese(void);
+
+		const Komprese & operator=(const Komprese & komprese);
+
+		bool komprimuj(EBitmapy & e);
+
+		static Bitmapa::SlovoBitu vytvorSlovo(const BitmapovyIndex & index,
+			const DelkaBitmapy sloupec);
+		void pridejSlovo(Bitmapa::SlovoBitu slovo, bool jeAktivni = false);
+		void zapisFillWord(void);
+		void resetujObsah(void);
+
+		VstupBitmap & vstup;
+		std::ofstream & vystup;
+
+		bool jeFillWord;
+		bool fillBit;
+		Bitmapa::SlovoBitu delkaFillWord;
+	};
+}
+
+
+
+#endif // KOMBIG_KOMPRESE_H_

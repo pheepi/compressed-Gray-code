@@ -1,5 +1,4 @@
-BSD 3-Clause License
-
+/**
 Copyright (c) 2009 - 2019, David Skorvaga
 All rights reserved.
 
@@ -27,3 +26,38 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#include <vector>
+#include <string>
+
+#include "NastaveniVypoctu.h"
+
+using namespace IOPodpora;
+using namespace Bitmapy;
+
+
+
+int main(const int argc, const char * const argv[])
+{
+	const std::vector<std::string> argumenty(argv,
+		argv + static_cast<ptrdiff_t>(argc));
+	NastaveniVypoctu nastaveniVypoctu;
+	SloupceStatistiky sloupce;
+
+	if (NastaveniVypoctu::zpracuj(argumenty, nastaveniVypoctu, sloupce))
+	{
+		if (sloupce.empty())
+		{
+			if (!nastaveniVypoctu.proved())
+				return 1;
+		}
+		else
+		{
+			if (!nastaveniVypoctu.provedStatistiku(sloupce))
+				return 1;
+		}
+	}
+
+	return 0;
+}
